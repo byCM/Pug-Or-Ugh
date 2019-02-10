@@ -9,7 +9,7 @@ class Dog(models.Model):
     image_filename = models.CharField(max_length=255)
     breed = models.CharField(max_length=255, default='u')
     age = models.IntegerField()
-    age_classification = models.CharField(max_length=255, default='b')
+    age_classification = models.CharField(max_length=255, default='u')
     gender = models.CharField(max_length=1,
                               choices=[('m', 'Male'),
                                        ('f', 'Female'),
@@ -43,7 +43,8 @@ class UserDog(models.Model):
     dog = models.ForeignKey(Dog, on_delete=models.CASCADE)
     status = models.CharField(max_length=1,
                               choices=[('l', 'Liked'),
-                                       ('d', 'Disliked')]
+                                       ('d', 'Disliked'),
+                                       ('u', 'Undecided')],
                               )
 
 
@@ -58,3 +59,12 @@ class UserPref(models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         UserPref.objects.create(user=instance)
+
+    dogs = Dog.objects.all()
+
+    for dog in dogs:
+        UserDog.objects.create(
+            user=instance,
+            dog=dog,
+            status='u',
+        )
