@@ -1,9 +1,5 @@
 # Pug or Ugh
 
-Username = test
-Password = test
-Token = 'ef7e5125918187dd416ed9ecc78f16d9ea56fe53'
-
 
 ## Requirements
 
