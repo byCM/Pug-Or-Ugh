@@ -67,7 +67,7 @@ class UpdateDogStatusView(UpdateAPIView):
         )
 
         if userdog_queryset:
-            save_dog = userdog_queryset.all()
+            q
 
             import pdb;
             pdb.set_trace()
@@ -81,19 +81,6 @@ class UpdateDogStatusView(UpdateAPIView):
 
             serializer = DogSerializer(dog)
             return Response(data=serializer.data, status=status.HTTP_200_OK)
-
-
-   # def get_object(self):
-    #    return UserDog.objects.filter(
-   #         user__id=self.request.user.id,
-   #         dog__id=self.kwargs.get('pk')
-    #    ).first()
-
-   # def put(self, request, pk, type):
-    #    the_dog = self.get_object()
-   #     the_dog.status = type[0].lower()
-    #    the_dog.save()
-   #     return Response(UserDogSerializer(the_dog).data)
 
 
 class UserPrefUpdateView(APIView):
