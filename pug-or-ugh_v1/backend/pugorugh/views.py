@@ -67,20 +67,21 @@ class UpdateDogStatusView(UpdateAPIView):
         )
 
         if userdog_queryset:
-            q
+            userdog_queryset.status = status
+            userdog_queryset.update()
 
             import pdb;
             pdb.set_trace()
 
         else:
-            user_dog = UserDog.objects.create(
+                user_dog = UserDog.objects.create(
                 user=self.request.user,
                 dog=dog,
                 status=self.kwargs.get('type')[0].lower()
             )
 
-            serializer = DogSerializer(dog)
-            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        serializer = DogSerializer(dog)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
 class UserPrefUpdateView(APIView):
