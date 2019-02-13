@@ -18,12 +18,6 @@ class UserRegisterView(CreateAPIView):
     serializer_class = UserSerializer
 
 
-class ListCreateDog(ListCreateAPIView):
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = Dog.objects.all()
-    serializer_class = DogSerializer
-
-
 class RetrieveNextDogView(RetrieveAPIView):
     serializer_class = DogSerializer
 
@@ -35,8 +29,19 @@ class RetrieveNextDogView(RetrieveAPIView):
             gender__in=category.gender.split(','),
             size__in=category.size.split(','),
             age_classification__in=category.age.split(','),
-            userdog__status=self.kwargs.get('type')[0].lower()
+            userdog__status=self.kwargs.get('type')[0].lower(),
+            userdog__user=user,
         )
+
+        print("Filtered Dogs Total: ", len(pref_dogs))
+
+        # lets try something here.
+        users = []
+        userdog_all = UserDog.objects.all()
+        for userdog in userdog_all:
+            users.append(userdog.user)  # append user object from user dog
+
+        print("ALL THE USER OBJECTS: \n", users)
 
         rel_type = self.kwargs.get('type')
         return pref_dogs
@@ -60,6 +65,7 @@ class UpdateDogStatusView(UpdateAPIView):
 
     def put(self, request, *args, **kwargs):
         dog = get_object_or_404(Dog, pk=self.kwargs.get('pk'))
+        dog_status = self.kwargs.get('status')
         userdog_queryset = UserDog.objects.filter(
             user=self.request.user,
             dog=dog,
@@ -67,19 +73,20 @@ class UpdateDogStatusView(UpdateAPIView):
         )
 
         if userdog_queryset:
-            userdog_queryset.status = status
-            userdog_queryset.update()
-
-            import pdb;
-            pdb.set_trace()
-
+            if dog_status == 'liked':
+                userdog_queryset.update(status='l')
+            elif dog_status == 'disliked':
+                userdog_queryset.update(status='d')
+            elif dog_status == 'undecided':
+                userdog_queryset.update(status='u')
+            else:
+                userdog_queryset.delete()
         else:
-                user_dog = UserDog.objects.create(
-                user=self.request.user,
-                dog=dog,
-                status=self.kwargs.get('type')[0].lower()
-            )
-
+            user_dog = UserDog.objects.create(
+            user=self.request.user,
+            dog=dog,
+            status=self.kwargs.get('type')[0].lower()
+        )
         serializer = DogSerializer(dog)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
@@ -102,5 +109,4 @@ class UserPrefUpdateView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
