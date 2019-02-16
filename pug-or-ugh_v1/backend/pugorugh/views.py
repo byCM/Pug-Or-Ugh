@@ -35,13 +35,12 @@ class RetrieveNextDogView(RetrieveAPIView):
 
         print("Filtered Dogs Total: ", len(pref_dogs))
 
-        # lets try something here.
         users = []
         userdog_all = UserDog.objects.all()
         for userdog in userdog_all:
             users.append(userdog.user)  # append user object from user dog
 
-        print("ALL THE USER OBJECTS: \n", users)
+#        print("ALL THE USER OBJECTS: \n", users)
 
         rel_type = self.kwargs.get('type')
         return pref_dogs
@@ -69,19 +68,22 @@ class UpdateDogStatusView(UpdateAPIView):
         userdog_queryset = UserDog.objects.filter(
             user=self.request.user,
             dog=dog,
-            status=self.kwargs.get('type')[0].lower()
+            status=self.kwargs.get('type')[0].lower(),
         )
 
         if userdog_queryset:
-            if dog_status == 'liked':
-                userdog_queryset.update(status='l')
-            elif dog_status == 'disliked':
-                userdog_queryset.update(status='d')
-            elif dog_status == 'undecided':
-                userdog_queryset.update(status='u')
+            if dog_status == 'Liked':
+                userdog_queryset.save(status='l')
+            elif dog_status == 'Disliked':
+                userdog_queryset.save(status='d')
+            elif dog_status == 'Undecided':
+                userdog_queryset.save(status='u')
             else:
                 userdog_queryset.delete()
         else:
+            print(userdog_queryset)
+            import pdb;
+            pdb.set_trace()
             user_dog = UserDog.objects.create(
             user=self.request.user,
             dog=dog,
@@ -109,4 +111,3 @@ class UserPrefUpdateView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
