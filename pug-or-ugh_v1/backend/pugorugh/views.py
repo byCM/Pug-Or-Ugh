@@ -33,7 +33,7 @@ class RetrieveNextDogView(RetrieveAPIView):
             userdog__user=user,
         )
 
-        print("Filtered Dogs Total: ", len(pref_dogs))
+        print(len(pref_dogs))
 
         users = []
         userdog_all = UserDog.objects.all()
