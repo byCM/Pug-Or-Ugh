@@ -48,4 +48,7 @@ def retrieve_next_dog(request, pk, type):
                         status=status.HTTP_404_NOT_FOUND)
     serializer = DogSerializer(dog)
     return Response(data=serializer.data, status=status.HTTP_200_OK)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7eb7d2ca0d8d39f682a3c9eef00bf89a28b0f058

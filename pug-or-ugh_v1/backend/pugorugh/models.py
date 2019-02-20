@@ -66,5 +66,9 @@ def create_user_profile(sender, instance, created, **kwargs):
           UserDog.objects.create(
               user=instance,
               dog=dog,
+<<<<<<< HEAD
               status='u'
+=======
+              status='u',
+>>>>>>> 7eb7d2ca0d8d39f682a3c9eef00bf89a28b0f058
           )
