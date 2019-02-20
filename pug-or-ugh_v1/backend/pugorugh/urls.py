@@ -5,7 +5,7 @@ from django.views.generic.base import RedirectView
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from .views import (UpdateDogStatusView,
+from .views import (
                             UserPrefUpdateView, UserRegisterView)
 
 # API endpoints
