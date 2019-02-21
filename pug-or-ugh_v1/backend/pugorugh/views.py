@@ -4,6 +4,7 @@ from rest_framework import permissions, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.generics import CreateAPIView
+from rest_framework.views import APIView
 
 from .models import Dog, UserDog, UserPref
 from .serializers import (DogSerializer, UserDogSerializer,
@@ -48,3 +49,18 @@ def retrieve_next_dog(request, pk, type):
                         status=status.HTTP_404_NOT_FOUND)
     serializer = DogSerializer(dog)
     return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET', 'PUT'])
+def set_user_preference(request):
+    """Sets users search preference"""
+    user = request.user
+    prefs = UserPref.objects.get(user=user)
+    if request.method == 'PUT':
+        data = request.data
+        prefs.age = data.get('age')
+        prefs.gender = data.get('gender')
+        prefs.size = data.get('size')
+        prefs.save()
+    serailizer = UserPrefSerializer(prefs)
+    return Response(serailizer.data)
